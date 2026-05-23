@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
+
+</head>
+<body>
+    <div id = "main-content">
+
+        <form id="ask-form" action="" method="POST">
+            <h3>Ask Question</h3>
+            <textarea type="text" name="ask-input" placeholder="Ask anything..." required></textarea>
+            <button type="submit" id="ask-btn">Ask</button>
+            <p id = "processing-icon" style="display: none;">Processing...</p>
+            
+        </form>
+        <p id="ask-result"></p>
+
+    </div>
+    <script>
+
+
+        document.getElementById('ask-form').onsubmit = async (e) => {
+            e.preventDefault();
+            let formData =  new FormData(e.target);
+
+           const loading = document.getElementById('processing-icon');
+           loading.style.display = "block";
+        try{
+           let response =  await fetch("/ask",{
+            method : "post",
+            body : formData
+           });
+           if(!response.ok){
+            alert("someting went wrong, try again!")
+           }
+
+           let data = await response.json()
+           document.getElementById('ask-result').innerHTML = data.response;
+           loading.style.display = "none";
+           
+        }
+        catch(error){
+            alert("something went wrong, try agian!")
+        }
+
+
+        };
+        
+    </script>
+</body>
+</html>
